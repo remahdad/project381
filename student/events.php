@@ -2,13 +2,11 @@
 session_start();
 require_once "../login/db.php";
 
-// تأكد أن المستخدم Student
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "student") {
     header("Location: ../login/login.php");
     exit;
 }
 
-// جلب الأحداث من قاعدة البيانات
 $stmt = $pdo->query("SELECT * FROM events ORDER BY date ASC");
 $events = $stmt->fetchAll();
 ?>
@@ -78,7 +76,6 @@ $events = $stmt->fetchAll();
 </footer>
 
 <script>
-// ========== Search Events ==========
 function searchEvents() {
   const input = document.getElementById("searchInput").value.toLowerCase();
   const cards = document.querySelectorAll(".event-card");
