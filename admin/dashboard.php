@@ -5,22 +5,17 @@ ini_set('display_errors', 1);
 session_start();
 require_once "../login/db.php";
 
-
-// حذف الحدث من نفس الصفحة
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_id"])) {
     $delete_id = intval($_POST["delete_id"]);
     $stmt = $pdo->prepare("DELETE FROM events WHERE id = ?");
     $stmt->execute([$delete_id]);
 }
 
-
-// تأكد أن المستخدم Admin
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
     header("Location: ../login/login.php");
     exit;
 }
 
-// جلب الأحداث من قاعدة البيانات
 $stmt = $pdo->query("SELECT * FROM events ORDER BY date ASC");
 $events = $stmt->fetchAll();
 ?>
