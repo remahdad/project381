@@ -6,9 +6,7 @@ require_once __DIR__ . "/csrf.php";
 
 $error = "";
 
-// نتحقق إن الطلب جاي من POST 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  // نتحقق من CSRF token للحماية
     if (!validateCsrfToken($_POST["csrf_token"])) {
         die("Invalid CSRF token");
     }
@@ -23,14 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($password)) {
         die("Password is required");
     }
-  // نبحث عن المستخدم في قاعدة البيانات حسب الإيميل
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user) {
-// الحالة الأولى: المستخدم موجود مسبقًا
-// نتحقق من كلمة المرور (مشفرة)
         if (password_verify($password, $user["password"])) {
 
             $_SESSION["user_id"] = $user["id"];
@@ -49,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
     } else {
- // الحالة الثانية: المستخدم غير موجود → نسجله جديد
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $role = ($email === "admin@yic.edu.sa") ? "admin" : "student";
 
@@ -118,11 +112,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     const email = document.querySelector("input[name='email']").value.trim().toLowerCase();
     const password = document.querySelector("input[name='password']").value.trim();
 
-    // استثناء الأدمن
     if (email === "admin@yic.edu.sa") {
-        return; // خليه يدخل بدون أي فحص
+        return; 
     }
-    // باقي الشروط للطلاب فقط
     const universityPattern = /^[a-zA-Z0-9._%+-]+@yic\.edu\.sa$/i;
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
