@@ -2,7 +2,6 @@
 session_start();
 require_once "../login/db.php";
 
-// تأكد أنه Admin
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
     header("Location: ../login/login.php");
     exit;
@@ -10,14 +9,12 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
 
 $event = null;
 
-// لو جايين نعدل حدث
 if (isset($_GET["id"])) {
     $stmt = $pdo->prepare("SELECT * FROM events WHERE id = ?");
     $stmt->execute([$_GET["id"]]);
     $event = $stmt->fetch();
 }
 
-// لو تم إرسال النموذج
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $title = $_POST["title"];
@@ -26,8 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $location = $_POST["location"];
     $description = $_POST["description"];
 
-    // معالجة الصورة
-    $imageName = $event["image"] ?? null; // لو تعديل، نحتفظ بالصورة القديمة
+    $imageName = $event["image"] ?? null; 
 
     if (!empty($_FILES["image"]["name"])) {
         $imageName = time() . "_" . $_FILES["image"]["name"];
@@ -35,13 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (!empty($_POST["id"])) {
-        // تعديل حدث
         $stmt = $pdo->prepare("UPDATE events 
             SET title=?, date=?, time=?, location=?, description=?, image=? 
             WHERE id=?");
         $stmt->execute([$title, $date, $time, $location, $description, $imageName, $_POST["id"]]);
     } else {
-        // إضافة حدث جديد
         $stmt = $pdo->prepare("INSERT INTO events 
             (title, date, time, location, description, image) 
             VALUES (?, ?, ?, ?, ?, ?)");
