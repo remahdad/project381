@@ -2,25 +2,21 @@
 session_start();
 require_once "../login/db.php";
 
-// تأكد أن المستخدم Admin فقط
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "admin") {
     header("Location: ../login/login.php");
     exit;
 }
 
-// نتأكد أن فيه ID للحدث
 if (!isset($_GET["id"])) {
     die("Event not found.");
 }
 
 $eventId = $_GET["id"];
 
-// نجيب بيانات الحدث من قاعدة البيانات
 $eventStmt = $pdo->prepare("SELECT * FROM events WHERE id = ?");
 $eventStmt->execute([$eventId]);
 $event = $eventStmt->fetch();
 
-// نجيب الطلاب المسجلين في هذا الحدث
 $stmt = $pdo->prepare("
     SELECT users.email
     FROM registrations
@@ -29,10 +25,8 @@ $stmt = $pdo->prepare("
     WHERE registrations.event_id = ?
 ");
 
-// تنفيذ الاستعلام
 $stmt->execute([$eventId]);
 
-// تخزين البيانات في متغير
 $students = $stmt->fetchAll();
 ?>
 
@@ -52,16 +46,13 @@ $students = $stmt->fetchAll();
 <main>
   <section>
 
-    <!-- عرض اسم الحدث -->
     <h2><?= $event["title"] ?></h2>
 
-    <!-- إذا ما فيه طلاب مسجلين -->
     <?php if (count($students) === 0): ?>
       <p>No students registered yet.</p>
 
     <?php else: ?>
 
-      <!-- جدول عرض الطلاب -->
       <table>
         <thead>
           <tr>
@@ -71,7 +62,6 @@ $students = $stmt->fetchAll();
 
         <tbody>
 
-          <!-- عرض كل طالب -->
           <?php foreach ($students as $student): ?>
             <tr>
               <td><?= htmlspecialchars($student["email"]) ?></td>
