@@ -5,7 +5,6 @@ ini_set('display_errors', 1);
 session_start();
 require_once "../login/db.php";
 
-// تأكد أن المستخدم Student
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "student") {
     header("Location: ../login/login.php");
     exit;
@@ -13,7 +12,6 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "student") {
 
 $userId = $_SESSION["user_id"];
 
-// جلب الأحداث اللي سجّل فيها المستخدم
 $stmt = $pdo->prepare("
     SELECT events.*
     FROM events
@@ -25,7 +23,6 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $myEvents = $stmt->fetchAll();
 
-// لو المستخدم ضغط Cancel
 if (isset($_GET["cancel"])) {
     $eventId = $_GET["cancel"];
 
