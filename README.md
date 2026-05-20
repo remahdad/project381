@@ -60,8 +60,7 @@ Security
 Video Walkthrough
 A full 3–5 minute demonstration video has been uploaded to Google Drive.
 Watch it here:
-[Google Drive Link]
-
+https://drive.google.com/file/d/1m1oAa_9MhPebM7ejW22y3KPboVhCZ4ZD/view?usp=drivesdk
 Project Structure:
 /admin
 /student
