@@ -5,20 +5,17 @@ ini_set('display_errors', 1);
 session_start();
 require_once "../login/db.php";
 
-// تأكد أن المستخدم Student
 if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "student") {
     header("Location: ../login/login.php");
     exit;
 }
 
-// تأكد أن فيه ID للحدث
 if (!isset($_GET["id"])) {
     die("Event not found.");
 }
 
 $eventId = $_GET["id"];
 
-// جلب بيانات الحدث
 $stmt = $pdo->prepare("SELECT * FROM events WHERE id = ?");
 $stmt->execute([$eventId]);
 $event = $stmt->fetch();
@@ -27,21 +24,17 @@ if (!$event) {
     die("Event not found.");
 }
 
-// لو المستخدم ضغط Register
 if (isset($_POST["register"])) {
     $userId = $_SESSION["user_id"];
 
-    // تأكد أنه ما سجّل قبل
     $check = $pdo->prepare("SELECT * FROM registrations WHERE user_id = ? AND event_id = ?");
     $check->execute([$userId, $eventId]);
 
     if ($check->rowCount() == 0) {
-        // سجّله
         $insert = $pdo->prepare("INSERT INTO registrations (user_id, event_id) VALUES (?, ?)");
         $insert->execute([$userId, $eventId]);
     }
 
-    // بعد التسجيل → تحويل لصفحة My Events
     header("Location: my-events.php");
     exit;
 }
